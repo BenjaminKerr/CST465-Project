@@ -1,0 +1,23 @@
+@model CST465_project.Models.CommentCreateDto
+
+<form class="comment-form mt-3" method="post" novalidate>
+    @Html.AntiForgeryToken()
+    <h4>Comments</h4>
+    <input type="hidden" id="commentVisualizationId" name="VisualizationId" value="@Model?.VisualizationId" />
+
+    <div class="mb-2">
+        <label for="commentAuthor" class="form-label">Name</label>
+        <input asp-for="Author" id="commentAuthor" name="Author" class="form-control" aria-label="Your name" required maxlength="100" />
+        <span asp-validation-for="Author" class="text-danger"></span>
+    </div>
+
+    <div class="mb-2">
+        <label for="commentContent" class="form-label">Comment</label>
+        <textarea asp-for="Content" id="commentContent" name="Content" class="form-control" aria-label="Your comment" required maxlength="1000" rows="3"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    <div>
+        <button class="btn btn-primary" type="submit">Post Comment</button>
+    </div>
+</form>

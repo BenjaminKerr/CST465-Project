@@ -1,0 +1,26 @@
+@model CST465_project.Models.EmailChangeDto
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Account Dashboard</h2>
+
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["StatusMessage"]</div>
+}
+
+<form method="post" novalidate>
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="NewEmail" class="form-label">Email</label>
+        <input asp-for="NewEmail" class="form-control" />
+        <span asp-validation-for="NewEmail" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Email</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,239 @@
+html {
+  font-size: 14px;
+}
+
+/* --- Visual Overhaul: fonts, variables, and base resets --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root{
+  --bg-900: #f8f8f8;
+  --bg-800: #ffffff;
+  --surface: rgba(255,255,255,0.03);
+  --muted: #9aa0a6;
+  --text: #e9eef655;
+  --accent-1: #ff2d55; /* vivid red */
+  --accent-2: #8b5cf6; /* purple */
+  --glass: rgba(255,255,255,0.04);
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --container-max: 1200px;
+}
+
+html,body{height:100%;}
+body{font-family: Poppins, system-ui, -apple-system, "Segoe UI", Roboto, 'Helvetica Neue', Arial; background: linear-gradient(180deg,var(--bg-900), #0b0b0f); color:var(--text);}
+
+/* Containers */
+.container{max-width:var(--container-max);}
+
+/* Navbar: frosted, compact, neon accents */
+.navbar-custom{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);backdrop-filter: blur(8px);border-bottom:1px solid rgba(255,255,255,0.03);}
+.navbar-custom .navbar-brand{font-weight:700;letter-spacing:.6px;color:var(--text);}
+.navbar-custom .nav-link{color:var(--muted);padding:.5rem .6rem;border-radius:8px}
+.navbar-custom .nav-link:hover{color:var(--text);background:linear-gradient(90deg, rgba(139,92,246,0.08), rgba(255,45,85,0.06))}
+
+/* Brand mark */
+.brand-mark{display:inline-block;width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));box-shadow:0 6px 18px rgba(139,92,246,0.14);margin-right:.6rem}
+
+/* Buttons */
+.btn-modern{border-radius:12px;padding:.5rem .85rem;font-weight:600;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+.btn-gradient{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:white;border:none}
+
+/* Cards: elevated glass panels */
+.panel{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+  border-radius:var(--radius-lg);
+  padding:1rem;
+}
+
+/* Forms: maintain visibility in both dark and light panels */
+.form-control{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:.5rem .75rem}
+.form-control::placeholder{color:rgba(233,238,246,0.44)}
+.form-control:focus{box-shadow:0 0 0 0.12rem rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.25);}
+
+/* Footer */
+.site-footer{padding:1rem 0;text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+
+/* small utilities */
+.muted{color:var(--muted)}
+.accent-gradient{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* Dark theme variables and styles */
+:root {
+  --bg: #ffffff;
+  --surface: #0b0b0b;
+  --text: #0b0b0b;
+  --muted: #6c757d;
+  --accent-red: #e53935;
+  --accent-purple: #8e24aa;
+  --card-bg: #111111;
+  --link: var(--accent-purple);
+}
+
+.dark-theme, .dark-theme body {
+  background-color: var(--bg, #000);
+}
+
+.dark-theme {
+  --bg: #000000;
+  --surface: #0b0b0b;
+  --text: #ffffff;
+  --muted: #cfcfcf;
+  --card-bg: #0f0f10;
+  --link: var(--accent-purple);
+}
+
+body, .container, .navbar, .footer, .card {
+  background-color: transparent;
+  color: var(--text) !important;
+}
+
+.dark-theme .navbar {
+  background-color: var(--surface) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+.dark-theme .navbar-brand,
+.dark-theme .nav-link,
+.dark-theme .navbar-text,
+.dark-theme .footer {
+  color: var(--text) !important;
+}
+
+.dark-theme a {
+  color: var(--link) !important;
+}
+
+.dark-theme .btn-primary {
+  background: linear-gradient(90deg, var(--accent-red), var(--accent-purple));
+  border-color: transparent;
+  color: #fff;
+}
+
+.dark-theme .btn-outline-primary {
+  color: var(--text);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.dark-theme .card {
+  background-color: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.theme-toggle-btn {
+  color: var(--text);
+  border: none;
+  background: transparent;
+}
+
+/* accents */
+.accent-red {
+  color: var(--accent-red) !important;
+}
+.accent-purple {
+  color: var(--accent-purple) !important;
+}
+
+/* small utility for reduced-focus glow in dark mode */
+.dark-theme .btn:focus, .dark-theme .form-control:focus {
+  box-shadow: 0 0 0 0.12rem rgba(142,36,170,0.12);
+}
+
+/* POLISH: typography, spacing, transitions, and component finishes */
+:root{
+  --radius: 10px;
+  --container-max: 1100px;
+  --gap: 1rem;
+  --muted-2: rgba(255,255,255,0.12);
+}
+
+html,body{
+  height:100%;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.container{
+  max-width: var(--container-max);
+}
+
+h1,h2,h3,h4{font-weight:600;color:var(--text);margin-bottom:.5rem}
+p{color:var(--muted);line-height:1.6}
+
+/* Smooth color/background transitions to avoid jarring flashes */
+*{transition:background-color .18s ease,color .18s ease,box-shadow .12s ease;border-color: .12s ease}
+
+/* Navbar polish */
+.navbar{
+  padding: .6rem 1rem;
+  backdrop-filter: blur(6px);
+}
+.navbar .navbar-brand{
+  font-weight:700;font-size:1.05rem;letter-spacing:.4px;color:var(--text) !important
+}
+.navbar .nav-link{
+  padding:.45rem .6rem;border-radius:6px;color:var(--muted) !important
+}
+.navbar .nav-link:hover{color:var(--text) !important;background:rgba(255,255,255,0.02)}
+
+/* Toggler subtle box */
+.navbar .navbar-toggler{border:1px solid rgba(255,255,255,0.06)}
+
+/* Buttons and inputs */
+.btn{border-radius:calc(var(--radius) - 2px)}
+.btn-primary{box-shadow:0 6px 18px rgba(0,0,0,0.18);padding:.5rem .9rem}
+.btn-outline-primary{background:transparent;border-radius:8px}
+.form-control{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:.6rem .75rem;border-radius:8px}
+.form-control::placeholder{color:rgba(255,255,255,0.36)}
+
+/* Cards and panels */
+.card{border-radius:12px;padding:1rem;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+.card .card-title{color:var(--text)}
+
+/* Footer */
+.footer{padding:1rem 0;background:transparent;border-top:1px solid rgba(255,255,255,0.04);text-align:center}
+.footer a{color:var(--muted)}
+
+/* Utilities */
+.muted{color:var(--muted)}
+.center{display:flex;align-items:center}
+
+/* Reduce focus outline for keyboard users but keep accessibility */
+*:focus{outline:none}
+a:focus, button:focus, input:focus{outline:3px solid rgba(142,36,170,0.12);outline-offset:2px}
+
+/* Minor responsive tweaks */
+@media (max-width:576px){
+  .navbar{padding:.4rem}
+  .card{padding:.75rem}
+}

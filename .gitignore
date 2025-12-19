@@ -1,0 +1,141 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Windows image thumbnails and folder config
+Icon?
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-store/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.python-version
+
+# Java / Gradle / Maven
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.ipr
+*.iws
+target/
+build/
+out/
+.gradle/
+.mvn/
+.settings/
+dependency-reduced-pom.xml
+
+# C/C++
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.exe.stackdump
+.build/
+
+# Go
+bin/
+pkg/
+*.exe
+
+# Rust
+target/
+
+# Ruby
+*.gem
+*.rbc
+.bundle/
+vendor/bundle/
+log/
+tmp/
+coverage/
+
+# PHP / Composer
+vendor/
+composer.lock
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDEs / Editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# JetBrains
+*.iml
+out/
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+.Dashboard/
+dump.rdb
+
+# Build artifacts
+dist/
+release/
+build/
+coverage/
+*.map
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+.secrets/
+secret-*.json
+credentials.json
+
+# Containers
+docker-compose.override.yml
+.docker/
+docker-compose.*.yml
+
+# CI
+.vagrant/
+.ci/
+circleci/
+
+# Misc
+*.bak
+*.tmp
+*.swp
+*~.nib
+npm-debug.log
+yarn-error.log
+
+# Ensure the .gitignore itself is tracked
+!.gitignore

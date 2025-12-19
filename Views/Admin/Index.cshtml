@@ -1,0 +1,38 @@
+@model IEnumerable<CST465_project.Models.AdminUserDto>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Admin Dashboard</h2>
+
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-info">@TempData["StatusMessage"]</div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Admin</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var u in Model)
+{
+    <tr>
+        <td>@u.Email</td>
+        <td>@(u.IsAdmin ? "Yes" : "No")</td>
+        <td>
+            <form method="post" asp-action="ToggleAdmin" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@u.Id" />
+                <button type="submit" class="btn btn-@(u.IsAdmin ? "danger" : "primary") btn-sm">@(u.IsAdmin ? "Revoke Admin" : "Make Admin")</button>
+            </form>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

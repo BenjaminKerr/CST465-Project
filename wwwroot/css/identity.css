@@ -1,0 +1,36 @@
+/* Identity-specific overrides to improve contrast on login/register pages */
+
+/* Page background and base text color */
+/* Ensure Identity pages use a light background even when theme toggles are present */
+html:not([data-theme]) body,
+html.dark-theme body,
+body {
+  background-color: #ffffff !important; /* force white background instead of gray */
+  color: #212529 !important;
+}
+
+/* Links: use brand blue for normal/visited to avoid purple contrast */
+/* Links: override dark-theme link colors (which use !important in site.css) */
+a, a:link, a:visited, .dark-theme a {
+  color: #0d6efd !important; /* bootstrap primary */
+}
+
+a:hover, a:focus, .dark-theme a:hover, .dark-theme a:focus {
+  color: #0a58ca !important;
+  text-decoration: underline;
+}
+
+/* Form controls ensure readable text */
+/* Form controls: ensure readable text and white backgrounds */
+.form-control, .dark-theme .form-control {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Ensure cards and panels remain white on top of the page background */
+.card, .card-body, .auth-card, .dark-theme .card, .dark-theme .card-body {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: rgba(0,0,0,0.06) !important;
+}
