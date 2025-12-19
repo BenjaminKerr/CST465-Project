@@ -1,240 +1,235 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grover's Search Algorithm</title>
-    <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
-</head>
-<body class="home-page">
-    <div class="container">
-        <div class="hero">
-            <h1>Welcome</h1>
-            <p>Explore interactive visualizations of Grover's Search Algorithm!</p>
-        </div>
+﻿@{
+    ViewData["Title"] = "Grover's Search Algorithm";
+}
 
-        <div class="content-card">
-            <h2>About Grover's Search Algorithm</h2>
-            <p>
-                Grover's algorithm is a <span class="highlight">quantum algorithm</span> that provides a quadratic speedup 
-                for unstructured search problems. It can find a marked item in an unsorted database of N items in 
-                approximately <strong>√N steps</strong>, compared to N steps required by classical algorithms.
-            </p>
-            
-            <h3>Visualizations:</h3>
-            <p>Check out the video below to see how Grover's algorithm works step-by-step!</p>
-            
-            <div class="visualization-placeholder">
-                <h3>Interactive Grover's Algorithm Visualization</h3>
+<link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
 
-                <div class="viz-controls">
-                    <label>
-                        Database Size (N):
-                        <input type="number" id="dbSize" value="8" min="4" max="10000" step="4">
-                    </label>
-                    <button id="resetBtn" class="viz-btn reset">Reset</button>
-                    <button id="stepBtn" class="viz-btn step">Run Iteration</button>
-                    <button id="autoBtn" class="viz-btn auto">Auto Run</button>
-                    <label>
-                        Interval (ms):
-                        <input type="number" id="autoInterval" value="300" min="50" step="50">
-                    </label>
-                </div>
+<div class="home-page">
+    <div class="hero">
+        <h1>Welcome</h1>
+        <p>Explore interactive visualizations of Grover's Search Algorithm!</p>
+    </div>
 
-                <div class="viz-canvas-wrap">
-                    <div id="iterationInfo">
-                        Iteration: 0 | Target Item: <span id="targetItem">?</span> | Status: Ready to search
-                    </div>
-                    <div id="searchStats" style="margin:6px 0; font-size:0.95rem; color:#222"></div>
-                    <canvas id="groverCanvas" width="1000" height="420"></canvas>
-                </div>
+    <div class="content-card">
+        <h2>About Grover's Search Algorithm</h2>
+        <p>
+            Grover's algorithm is a <span class="highlight">quantum algorithm</span> that provides a quadratic speedup 
+            for unstructured search problems. It can find a marked item in an unsorted database of N items in 
+            approximately <strong>√N steps</strong>, compared to N steps required by classical algorithms.
+        </p>
+        
+        <h3>Visualizations:</h3>
+        <p>Check out the visualization below to see how Grover's algorithm works step-by-step!</p>
+        
+        <div class="visualization-placeholder">
+            <h3>Interactive Grover's Algorithm Visualization</h3>
 
-                <div class="viz-explain">
-                    <h4>How it works:</h4>
-                    <p><strong>1.</strong> Initially, all items have equal probability (uniform superposition)</p>
-                    <p><strong>2.</strong> Each iteration amplifies the target item's probability</p>
-                    <p><strong>3.</strong> After ~√N iterations, the target has the highest probability</p>
-                    <p><strong>4.</strong> Classical search would need N/2 checks on average!</p>
-                </div>
-                <div id="commentsContainer" class="comments-section"></div>
-
-                @await Html.PartialAsync("_CommentForm", new CST465_project.Models.CommentCreateDto { VisualizationId = 8 })
-
+            <div class="viz-controls">
+                <label>
+                    Database Size (N):
+                    <input type="number" id="dbSize" value="8" min="4" max="10000" step="4">
+                </label>
+                <button id="resetBtn" class="viz-btn reset">Reset</button>
+                <button id="stepBtn" class="viz-btn step">Run Iteration</button>
+                <button id="autoBtn" class="viz-btn auto">Auto Run</button>
+                <label>
+                    Interval (ms):
+                    <input type="number" id="autoInterval" value="300" min="50" step="50">
+                </label>
             </div>
-            <script src="~/js/home-comments.js" asp-append-version="true"></script>
 
-            <script>
-                const canvas = document.getElementById('groverCanvas');
-                const ctx = canvas.getContext('2d');
-                const iterationInfo = document.getElementById('iterationInfo');
-                const searchStats = document.getElementById('searchStats');
-                const targetItemSpan = document.getElementById('targetItem');
-                
-                let N = 8;
-                let targetIndex = Math.floor(Math.random() * N);
-                let iteration = 0;
-                let probabilities = [];
-                let maxIterations = 0;
+            <div class="viz-canvas-wrap">
+                <div id="iterationInfo">
+                    Iteration: 0 | Target Item: <span id="targetItem">?</span> | Status: Ready to search
+                </div>
+                <div id="searchStats" style="margin:6px 0; font-size:0.95rem; color:#222"></div>
+                <canvas id="groverCanvas" width="1000" height="420"></canvas>
+            </div>
 
-                // autoplay
-                let autoTimer = null;
-
-                function initialize() {
-                    // clamp and parse
-                    N = Math.max(4, parseInt(document.getElementById('dbSize').value) || 8);
-                    targetIndex = Math.floor(Math.random() * N);
-                    iteration = 0;
-                    maxIterations = Math.ceil(Math.PI / 4 * Math.sqrt(N));
-                    
-                    probabilities = new Array(N).fill(1 / N);
-                    
-                    targetItemSpan.textContent = targetIndex;
-                    updateStats();
-                    updateDisplay();
-                }
-
-                function groverIteration() {
-                    if (iteration >= maxIterations) {
-                        iterationInfo.textContent = `Search Complete! Found item ${targetIndex} in ${iteration} iterations (Classical: ~${Math.floor(N/2)} checks)`;
-                        stopAuto();
-                        return;
-                    }
-                    
-                    iteration++;
-                    
-                    const avgAmplitude = probabilities.reduce((a, b) => a + Math.sqrt(b), 0) / N;
-                    
-                    probabilities = probabilities.map((p, i) => {
-                        let amplitude = Math.sqrt(p);
-                        
-                        if (i === targetIndex) {
-                            amplitude = -amplitude;
-                        }
-                        
-                        amplitude = 2 * avgAmplitude - amplitude;
-                        
-                        // keep as probability (non-negative)
-                        return Math.max(0, amplitude * amplitude);
-                    });
-                    
-                    const sum = probabilities.reduce((a, b) => a + b, 0);
-                    probabilities = probabilities.map(p => p / sum);
-                    
-                    updateDisplay();
-                }
-
-                function getDisplayBins(maxBins = 128) {
-                    if (N <= maxBins) {
-                        return {
-                            probs: probabilities.slice(),
-                            labels: probabilities.map((_, i) => String(i)),
-                            displayN: N
-                        };
-                    }
-
-                    const bins = maxBins;
-                    const binSize = Math.ceil(N / bins);
-                    const probs = new Array(bins).fill(0);
-                    const labels = new Array(bins).fill('');
-
-                    for (let i = 0; i < N; i++) {
-                        const b = Math.floor(i / binSize);
-                        if (b < bins) probs[b] += probabilities[i];
-                    }
-
-                    for (let b = 0; b < bins; b++) {
-                        const start = b * binSize;
-                        const end = Math.min(N - 1, (b + 1) * binSize - 1);
-                        labels[b] = `${start}-${end}`;
-                    }
-
-                    return { probs, labels, displayN: bins };
-                }
-
-                function updateDisplay() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    const { probs: displayProbs, labels, displayN } = getDisplayBins(128);
-
-                    const barWidth = Math.min(60, canvas.width / displayN - 6);
-                    const spacing = canvas.width / displayN;
-                    const maxHeight = canvas.height - 100;
-
-                    const maxProb = Math.max(...displayProbs);
-
-                    displayProbs.forEach((prob, i) => {
-                        const height = (prob / maxProb) * maxHeight;
-                        const x = i * spacing + (spacing - barWidth) / 2;
-                        const y = canvas.height - height - 40;
-
-                        // decide if this bin contains the target index
-                        let containsTarget = false;
-                        if (N <= displayN) {
-                            containsTarget = (i === targetIndex);
-                        } else {
-                            // parse label range
-                            const parts = labels[i].split('-').map(Number);
-                            containsTarget = (targetIndex >= parts[0] && targetIndex <= parts[1]);
-                        }
-
-                        ctx.fillStyle = containsTarget ? '#dc2626' : '#9333ea';
-                        ctx.fillRect(x, y, barWidth, height);
-
-                        ctx.fillStyle = '#111';
-                        ctx.font = displayN <= 64 ? '14px sans-serif' : '12px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(labels[i], x + barWidth / 2, canvas.height - 18);
-
-                        const percent = (prob * 100).toFixed(2);
-                        ctx.fillText(`${percent}%`, x + barWidth / 2, y - 6);
-                    });
-
-                    if (iteration < maxIterations) {
-                        iterationInfo.textContent = `Iteration: ${iteration} / ${maxIterations} | Target Item: ${targetIndex} | Searching...`;
-                    } else if (iteration === maxIterations) {
-                        iterationInfo.textContent = `Search Complete! Found item ${targetIndex} in ${iteration} iterations (Classical: ~${Math.floor(N/2)} checks)`;
-                    }
-
-                    updateStats();
-                }
-
-                function updateStats() {
-                    const classical = Math.floor(N / 2);
-                    const quantum = Math.ceil(Math.PI / 4 * Math.sqrt(N));
-                    const ratio = (classical / Math.max(1, quantum)).toFixed(2);
-                    searchStats.textContent = `N = ${N} — Classical ~${classical} checks, Quantum ~${quantum} iterations, Speedup ≈ ${ratio}×`;
-                }
-
-                function startAuto() {
-                    if (autoTimer) return;
-                    const interval = Math.max(50, parseInt(document.getElementById('autoInterval').value) || 300);
-                    autoTimer = setInterval(() => {
-                        groverIteration();
-                        if (iteration >= maxIterations) stopAuto();
-                    }, interval);
-                    document.getElementById('autoBtn').textContent = 'Stop Auto';
-                }
-
-                function stopAuto() {
-                    if (autoTimer) {
-                        clearInterval(autoTimer);
-                        autoTimer = null;
-                    }
-                    document.getElementById('autoBtn').textContent = 'Auto Run';
-                }
-
-                document.getElementById('resetBtn').addEventListener('click', () => { initialize(); stopAuto(); });
-                document.getElementById('stepBtn').addEventListener('click', groverIteration);
-                document.getElementById('dbSize').addEventListener('change', initialize);
-                document.getElementById('autoBtn').addEventListener('click', () => {
-                    if (autoTimer) stopAuto(); else startAuto();
-                });
-
-                // initialize on load
-                initialize();
-            </script>
-        </div>
+            <div class="viz-explain">
+                <h4>How it works:</h4>
+                <p><strong>1.</strong> Initially, all items have equal probability (uniform superposition)</p>
+                <p><strong>2.</strong> Each iteration amplifies the target item's probability</p>
+                <p><strong>3.</strong> After ~√N iterations, the target has the highest probability</p>
+                <p><strong>4.</strong> Classical search would need N/2 checks on average!</p>
+            </div>
+            
+            <div id="commentsContainer" class="comments-section"></div>
+            @await Html.PartialAsync("_CommentForm", new CST465_project.Models.CommentCreateDto { VisualizationId = 8 })
         </div>
     </div>
-</body>
-</html>
+</div>
+
+@section Scripts {
+    <script src="~/js/home-comments.js" asp-append-version="true"></script>
+    <script>
+        const canvas = document.getElementById('groverCanvas');
+        const ctx = canvas.getContext('2d');
+        const iterationInfo = document.getElementById('iterationInfo');
+        const searchStats = document.getElementById('searchStats');
+        const targetItemSpan = document.getElementById('targetItem');
+        
+        let N = 8;
+        let targetIndex = Math.floor(Math.random() * N);
+        let iteration = 0;
+        let probabilities = [];
+        let maxIterations = 0;
+
+        // autoplay
+        let autoTimer = null;
+
+        function initialize() {
+            // clamp and parse
+            N = Math.max(4, parseInt(document.getElementById('dbSize').value) || 8);
+            targetIndex = Math.floor(Math.random() * N);
+            iteration = 0;
+            maxIterations = Math.ceil(Math.PI / 4 * Math.sqrt(N));
+            
+            probabilities = new Array(N).fill(1 / N);
+            
+            targetItemSpan.textContent = targetIndex;
+            updateStats();
+            updateDisplay();
+        }
+
+        function groverIteration() {
+            if (iteration >= maxIterations) {
+                iterationInfo.textContent = `Search Complete! Found item ${targetIndex} in ${iteration} iterations (Classical: ~${Math.floor(N/2)} checks)`;
+                stopAuto();
+                return;
+            }
+            
+            iteration++;
+            
+            const avgAmplitude = probabilities.reduce((a, b) => a + Math.sqrt(b), 0) / N;
+            
+            probabilities = probabilities.map((p, i) => {
+                let amplitude = Math.sqrt(p);
+                
+                if (i === targetIndex) {
+                    amplitude = -amplitude;
+                }
+                
+                amplitude = 2 * avgAmplitude - amplitude;
+                
+                // keep as probability (non-negative)
+                return Math.max(0, amplitude * amplitude);
+            });
+            
+            const sum = probabilities.reduce((a, b) => a + b, 0);
+            probabilities = probabilities.map(p => p / sum);
+            
+            updateDisplay();
+        }
+
+        function getDisplayBins(maxBins = 128) {
+            if (N <= maxBins) {
+                return {
+                    probs: probabilities.slice(),
+                    labels: probabilities.map((_, i) => String(i)),
+                    displayN: N
+                };
+            }
+
+            const bins = maxBins;
+            const binSize = Math.ceil(N / bins);
+            const probs = new Array(bins).fill(0);
+            const labels = new Array(bins).fill('');
+
+            for (let i = 0; i < N; i++) {
+                const b = Math.floor(i / binSize);
+                if (b < bins) probs[b] += probabilities[i];
+            }
+
+            for (let b = 0; b < bins; b++) {
+                const start = b * binSize;
+                const end = Math.min(N - 1, (b + 1) * binSize - 1);
+                labels[b] = `${start}-${end}`;
+            }
+
+            return { probs, labels, displayN: bins };
+        }
+
+        function updateDisplay() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const { probs: displayProbs, labels, displayN } = getDisplayBins(128);
+
+            const barWidth = Math.min(60, canvas.width / displayN - 6);
+            const spacing = canvas.width / displayN;
+            const maxHeight = canvas.height - 100;
+
+            const maxProb = Math.max(...displayProbs);
+
+            displayProbs.forEach((prob, i) => {
+                const height = (prob / maxProb) * maxHeight;
+                const x = i * spacing + (spacing - barWidth) / 2;
+                const y = canvas.height - height - 40;
+
+                // decide if this bin contains the target index
+                let containsTarget = false;
+                if (N <= displayN) {
+                    containsTarget = (i === targetIndex);
+                } else {
+                    // parse label range
+                    const parts = labels[i].split('-').map(Number);
+                    containsTarget = (targetIndex >= parts[0] && targetIndex <= parts[1]);
+                }
+
+                ctx.fillStyle = containsTarget ? '#dc2626' : '#9333ea';
+                ctx.fillRect(x, y, barWidth, height);
+
+                ctx.fillStyle = '#111';
+                ctx.font = displayN <= 64 ? '14px sans-serif' : '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(labels[i], x + barWidth / 2, canvas.height - 18);
+
+                const percent = (prob * 100).toFixed(2);
+                ctx.fillText(`${percent}%`, x + barWidth / 2, y - 6);
+            });
+
+            if (iteration < maxIterations) {
+                iterationInfo.textContent = `Iteration: ${iteration} / ${maxIterations} | Target Item: ${targetIndex} | Searching...`;
+            } else if (iteration === maxIterations) {
+                iterationInfo.textContent = `Search Complete! Found item ${targetIndex} in ${iteration} iterations (Classical: ~${Math.floor(N/2)} checks)`;
+            }
+
+            updateStats();
+        }
+
+        function updateStats() {
+            const classical = Math.floor(N / 2);
+            const quantum = Math.ceil(Math.PI / 4 * Math.sqrt(N));
+            const ratio = (classical / Math.max(1, quantum)).toFixed(2);
+            searchStats.textContent = `N = ${N} — Classical ~${classical} checks, Quantum ~${quantum} iterations, Speedup ≈ ${ratio}×`;
+        }
+
+        function startAuto() {
+            if (autoTimer) return;
+            const interval = Math.max(50, parseInt(document.getElementById('autoInterval').value) || 300);
+            autoTimer = setInterval(() => {
+                groverIteration();
+                if (iteration >= maxIterations) stopAuto();
+            }, interval);
+            document.getElementById('autoBtn').textContent = 'Stop Auto';
+        }
+
+        function stopAuto() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+            document.getElementById('autoBtn').textContent = 'Auto Run';
+        }
+
+        document.getElementById('resetBtn').addEventListener('click', () => { initialize(); stopAuto(); });
+        document.getElementById('stepBtn').addEventListener('click', groverIteration);
+        document.getElementById('dbSize').addEventListener('change', initialize);
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            if (autoTimer) stopAuto(); else startAuto();
+        });
+
+        // initialize on load
+        initialize();
+    </script>
+}
