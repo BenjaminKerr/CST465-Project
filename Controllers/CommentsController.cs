@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CST465_project.Models;
 using CST465_project.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CST465_project.Controllers;
 
@@ -19,7 +20,6 @@ public class CommentsController : ControllerBase
         _logger = logger;
     }
 
-    // GET api/comments?visualizationId=1
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Get([FromQuery] int visualizationId)
@@ -27,20 +27,22 @@ public class CommentsController : ControllerBase
         try
         {
             var comments = await _repo.GetCommentsByVisualizationIdAsync(visualizationId);
-            var shaped = comments.Select(c => new { c.Id, c.VisualizationId, c.Author, c.Content, c.CreatedAt });
+            // Selecting only necessary fields to keep the API response lean
+            var shaped = comments.Select(c => new { c.Id, c.VisualizationId, c.Content, c.CreatedAt, c.AuthorEmail });
             return Ok(shaped);
         }
         catch (Exception ex)
         {
-            return Problem(detail: ex.Message, statusCode: 500);
+            _logger.LogError(ex, "Error fetching comments for visualization {Id}", visualizationId);
+            return Problem(detail: "An internal error occurred while retrieving comments.", statusCode: 500);
         }
     }
 
-    // POST api/comments
     [HttpPost]
+    [Authorize] // Only logged-in users can comment
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Authorize]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Post([FromBody] CommentCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -48,22 +50,29 @@ public class CommentsController : ControllerBase
 
         try
         {
+            var email = User.FindFirstValue(ClaimTypes.Email) ??User.Identity?.Name ?? "Anonymous";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var comment = new Comment
             {
                 VisualizationId = dto.VisualizationId,
-                Author = dto.Author,
                 Content = dto.Content,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                UserId = userId,
+                AuthorEmail = email ?? "Anonymous"
             };
 
             await _repo.AddCommentAsync(comment);
 
-            return CreatedAtAction(nameof(Get), new { visualizationId = comment.VisualizationId }, new { comment.Id, comment.VisualizationId, comment.Author, comment.Content, comment.CreatedAt });
+            // Returns 201 Created with a link to the GET method
+            return CreatedAtAction(
+                nameof(Get),
+                new { visualizationId = comment.VisualizationId },
+                comment);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating comment");
-            return Problem(detail: ex.Message, statusCode: 500);
+            _logger.LogError(ex, "Error creating comment for visualization {Id} by user {User}", dto.VisualizationId, User.Identity?.Name);
+            return Problem(detail: "Could not save comment.", statusCode: 500);
         }
     }
 }

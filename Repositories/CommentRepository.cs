@@ -7,10 +7,12 @@ namespace CST465_project.Repositories
     public class CommentRepository : ICommentRepository
     {
         private readonly ApplicationDbContext _db;
+        private ILogger<CommentRepository> _logger;
 
-        public CommentRepository(ApplicationDbContext db)
+        public CommentRepository(ApplicationDbContext db, ILogger<CommentRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<Comment>> GetCommentsByVisualizationIdAsync(int visualizationId)
@@ -27,24 +29,14 @@ namespace CST465_project.Repositories
         {
             try
             {
-                var entity = new Comment
-                {
-                    VisualizationId = comment.VisualizationId,
-                    Author = comment.Author,
-                    Content = comment.Content,
-                    CreatedAt = comment.CreatedAt
-                };
-
-                try { _db.Comments.Add(entity); }
-                catch (Exception ex) { throw new Exception("Error adding comment entity to DbSet.", ex); }
-                
+                _db.Comments.Add(comment);
                 await _db.SaveChangesAsync();
-                comment.Id = entity.Id;
             }
             catch (Exception ex)
             {
                 // Log or handle the exception as needed
-                throw new Exception("An error occurred while adding the comment.", ex);
+                _logger.LogError(ex, "Error adding comment to visualization {Id}", comment.VisualizationId);
+                throw;
             }
         }
     }

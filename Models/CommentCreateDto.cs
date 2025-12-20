@@ -8,10 +8,6 @@ namespace CST465_project.Models
         public int VisualizationId { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Author { get; set; } = string.Empty;
-
-        [Required]
         [StringLength(1000)]
         public string Content { get; set; } = string.Empty;
     }

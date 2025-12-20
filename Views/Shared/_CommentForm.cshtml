@@ -7,9 +7,15 @@
     <input type="hidden" id="commentVisualizationId" name="VisualizationId" value="@Model?.VisualizationId" />
 
     <div class="mb-2">
-        <label for="commentAuthor" class="form-label">Name</label>
-        <input asp-for="Author" id="commentAuthor" name="Author" class="form-control" aria-label="Your name" required maxlength="100" />
-        <span asp-validation-for="Author" class="text-danger"></span>
+        <label class="form-label">Posting as</label>
+        @if (User?.Identity?.IsAuthenticated == true)
+        {
+            <div class="form-control-plaintext text-white">@(User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? User.Identity.Name)</div>
+        }
+        else
+        {
+            <div class="form-control-plaintext text-white">Anonymous</div>
+        }
     </div>
 
     <div class="mb-2">
