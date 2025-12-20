@@ -7,7 +7,7 @@ namespace CST465_project.Repositories
     public class CommentRepository : ICommentRepository
     {
         private readonly ApplicationDbContext _db;
-        private ILogger<CommentRepository> _logger;
+        private readonly ILogger<CommentRepository> _logger;
 
         public CommentRepository(ApplicationDbContext db, ILogger<CommentRepository> logger)
         {

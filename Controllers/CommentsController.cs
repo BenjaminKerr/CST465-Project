@@ -50,14 +50,14 @@ public class CommentsController : ControllerBase
         var isEnabled = _config.GetValue<bool>("SiteSettings:EnablePublicComments");
         if (!isEnabled)
         {
-            return Forbid("Public comments are disabled.");
+            return BadRequest(new { error = "Comments are currently disabled." });
         }
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
 
         try
         {
-            var email = User.FindFirstValue(ClaimTypes.Email) ??User.Identity?.Name ?? "Anonymous";
+            var email = User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name ?? "Anonymous";
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var comment = new Comment
             {

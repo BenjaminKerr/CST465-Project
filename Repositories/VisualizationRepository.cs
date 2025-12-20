@@ -9,10 +9,12 @@ namespace CST465_project.Repositories
     public class VisualizationRepository : IVisualizationRepository
     {
         private readonly ApplicationDbContext _db;
+        private readonly ILogger<VisualizationRepository> _logger;
 
-        public VisualizationRepository(ApplicationDbContext db)
+        public VisualizationRepository(ApplicationDbContext db, ILogger<VisualizationRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<Visualization>> GetAllAsync()
@@ -27,18 +29,34 @@ namespace CST465_project.Repositories
 
         public async Task AddAsync(Visualization v)
         {
-            v.CreatedAt = DateTime.UtcNow;
-            _db.Visualizations.Add(v);
-            await _db.SaveChangesAsync();
+            try
+            {
+                v.CreatedAt = DateTime.UtcNow;
+                _db.Visualizations.Add(v);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding visualization {Id}", v.Id);
+                throw;
+            }
         }
 
         public async Task DeleteAsync(int id)
         {
-            var viz = await _db.Visualizations.FindAsync(id);
-            if (viz != null)
+            try
             {
-                _db.Visualizations.Remove(viz);
-                await _db.SaveChangesAsync();
+                var viz = await _db.Visualizations.FindAsync(id);
+                if (viz != null)
+                {
+                    _db.Visualizations.Remove(viz);
+                    await _db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting visualization {Id}", id);
+                throw;
             }
         }
     }

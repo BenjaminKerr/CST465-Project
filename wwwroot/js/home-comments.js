@@ -65,25 +65,6 @@
     }
 
     let form = document.querySelector('.comment-form');
-    // if (!form) {
-    //   form = document.createElement('form');
-    //   form.className = 'comment-form mt-3';
-    //   form.innerHTML = `
-    //     <h4>Comments</h4>
-    //     <div class="mb-2">
-    //       <label class="form-label">Posting as:</label>
-    //       <input type="text" class="form-control bg-light" value="Logged-in User" readonly />
-    //     </div>
-    //     <div class="mb-2">
-    //       <label for="commentContent" class="form-label">Comment</label>
-    //       <textarea id="commentContent" name="Content" class="form-control" required maxlength="1000" rows="3"></textarea>
-    //     </div>
-    //     <div>
-    //       <button class="btn btn-primary" type="submit">Post Comment</button>
-    //     </div>
-    //   `;
-    //   viz.appendChild(form);
-    // }
 
     const dbSizeInput = document.getElementById('dbSize');
     const getVisualizationId = () => parseInt(dbSizeInput?.value || '8');

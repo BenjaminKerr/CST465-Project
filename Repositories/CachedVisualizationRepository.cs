@@ -1,8 +1,5 @@
 using CST465_project.Models;
 using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CST465_project.Repositories
 {
@@ -38,9 +35,10 @@ namespace CST465_project.Repositories
             _cache.Remove("visualizations:all");
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            return _inner.DeleteAsync(id);
+            await _inner.DeleteAsync(id);
+            _cache.Remove("visualizations:all");
         }
     }
 }
