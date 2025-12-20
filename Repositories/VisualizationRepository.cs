@@ -22,7 +22,7 @@ namespace CST465_project.Repositories
 
         public async Task<Visualization?> GetByIdAsync(int id)
         {
-            return await _db.Visualizations.FindAsync(id);
+            return await _db.Visualizations.FirstOrDefaultAsync(v => v.Id == id);
         }
 
         public async Task AddAsync(Visualization v)
@@ -30,6 +30,16 @@ namespace CST465_project.Repositories
             v.CreatedAt = DateTime.UtcNow;
             _db.Visualizations.Add(v);
             await _db.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var viz = await _db.Visualizations.FindAsync(id);
+            if (viz != null)
+            {
+                _db.Visualizations.Remove(viz);
+                await _db.SaveChangesAsync();
+            }
         }
     }
 }

@@ -232,4 +232,18 @@
         // initialize on load
         initialize();
     </script>
+    @Html.AntiForgeryToken()
+    <div class="card mt-3">
+    <div class="card-header">Save This Run</div>
+    <div class="card-body">
+        <div class="input-group">
+            <input type="text" id="vizName" class="form-control" placeholder="Enter a name for this run (e.g., 'Grovers 4-bit')" maxlength="100">
+            <input type="text" id="vizDesc" class="form-control" placeholder="Optional description" maxlength="200">
+            <button id="btnSaveViz" class="btn btn-success" type="button">
+                <i class="bi bi-save"></i> Save Results
+            </button>
+        </div>
+        <div id="saveStatus" class="form-text mt-2"></div>
+    </div>
+</div>
 }

@@ -13,11 +13,13 @@ public class CommentsController : ControllerBase
 {
     private readonly ICommentRepository _repo;
     private readonly ILogger<CommentsController> _logger;
+    private readonly IConfiguration _config;
 
-    public CommentsController(ICommentRepository repo, ILogger<CommentsController> logger)
+    public CommentsController(ICommentRepository repo, ILogger<CommentsController> logger, IConfiguration config)
     {
         _repo = repo;
         _logger = logger;
+        _config = config;
     }
 
     [HttpGet]
@@ -45,6 +47,11 @@ public class CommentsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Post([FromBody] CommentCreateDto dto)
     {
+        var isEnabled = _config.GetValue<bool>("SiteSettings:EnablePublicComments");
+        if (!isEnabled)
+        {
+            return Forbid("Public comments are disabled.");
+        }
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
 

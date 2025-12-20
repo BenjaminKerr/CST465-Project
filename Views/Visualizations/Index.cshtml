@@ -1,0 +1,51 @@
+@model IEnumerable<CST465_project.Models.Visualization>
+
+@{
+    ViewData["Title"] = "Visualization History";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-clock-history"></i> Saved Visualizations</h2>
+    <p class="text-muted">Manage your saved Grover's Algorithm runs below.</p>
+
+    <table class="table table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Qubits</th>
+                <th>Date Saved</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <strong>@item.Name</strong><br/>
+                        <small class="text-muted">@item.Description</small>
+                    </td>
+                    <td>@item.BitSize</td>
+                    <td>@item.CreatedAt.ToShortDateString()</td>
+                    <td>
+                        <div class="btn-group">
+                            <a asp-action="Download" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-download"></i>
+                            </a>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" 
+                                      onsubmit="return confirm('Delete this record?');" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -6,6 +6,7 @@ using CST465_project.Models;
 namespace CST465_project.Controllers;
 
 [Authorize(Roles = "Admin")]
+[Route("[controller]")]
 public class AdminController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -17,6 +18,7 @@ public class AdminController : Controller
         _roleManager = roleManager;
     }
 
+    [HttpGet("")]
     public async Task<IActionResult> Index()
     {
         var users = _userManager.Users.ToList();

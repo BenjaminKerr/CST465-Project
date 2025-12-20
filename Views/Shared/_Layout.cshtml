@@ -1,10 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@inject IConfiguration Configuration
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CST465_project</title>
+    <title>@Configuration["SiteSettings:SiteTitle"] - CST465_project</title>
     <script>
         // Apply theme as early as possible to avoid flash
         (function () {
@@ -15,15 +17,13 @@
         })();
     </script>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CST465_project.styles.css" asp-append-version="true" />
     @if (string.Equals(ViewContext.RouteData.Values["area"] as string, "Identity", StringComparison.OrdinalIgnoreCase))
     {
         <link rel="stylesheet" href="~/css/identity.css" asp-append-version="true" />
     }
-    @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
     <meta name="x-xsrf-token" content="@Xsrf.GetAndStoreTokens(ViewContext.HttpContext).RequestToken" />
 </head>
 
@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Visualizations"
+                                asp-action="Index">History</a>
+                        </li>
 
                         @if (User?.Identity?.IsAuthenticated == true)
                         {
@@ -51,19 +55,14 @@
                                 <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Dashboard</a>
                             </li>
                         }
-                        <li class="nav-item">
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                            {
+                        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
-                                    asp-action="Index">Admin</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
                             </li>
                         }
-                        </li>
                     </ul>
                     <div class="d-flex align-items-center">
-                        <button id="theme-toggle" class="btn theme-toggle-btn me-2" title="Toggle theme"><span
-                                id="theme-icon">🌙</span></button>
                         <partial name="_LoginPartial" />
                     </div>
                 </div>
@@ -81,11 +80,11 @@
             &copy; 2025 - Grover's Algorithm Visualization
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

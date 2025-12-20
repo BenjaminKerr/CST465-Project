@@ -9,5 +9,6 @@ namespace CST465_project.Repositories
         Task<IEnumerable<Visualization>> GetAllAsync();
         Task<Visualization?> GetByIdAsync(int id);
         Task AddAsync(Visualization v);
+        Task DeleteAsync(int id);
     }
 }

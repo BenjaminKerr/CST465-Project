@@ -37,5 +37,10 @@ namespace CST465_project.Repositories
             await _inner.AddAsync(v);
             _cache.Remove("visualizations:all");
         }
+
+        public Task DeleteAsync(int id)
+        {
+            return _inner.DeleteAsync(id);
+        }
     }
 }

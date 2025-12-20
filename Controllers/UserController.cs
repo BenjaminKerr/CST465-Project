@@ -6,6 +6,7 @@ using CST465_project.Models;
 namespace CST465_project.Controllers;
 
 [Authorize]
+[Route("[controller]")]
 public class UserController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -17,7 +18,7 @@ public class UserController : Controller
         _signInManager = signInManager;
     }
 
-    [HttpGet]
+    [HttpGet("")]
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
